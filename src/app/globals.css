@@ -7,9 +7,17 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-canvas: var(--canvas);
+  --color-ink-900: var(--ink-900);
+  --color-ink-700: var(--ink-700);
+  --color-brand-600: var(--brand-600);
+  --color-success-700: var(--success-700);
+  --color-pending-700: var(--pending-700);
+  --color-error-700: var(--error-700);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
+  --font-display: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -49,8 +57,15 @@
 }
 
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --canvas: #F5F6F8;
+  --ink-900: #10172A;
+  --ink-700: #1B2333;
+  --brand-600: #3454D1;
+  --success-700: #147A52;
+  --pending-700: #B9770E;
+  --error-700: #B23A3A;
+  --background: var(--canvas);
+  --foreground: var(--ink-700);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -127,4 +142,35 @@
   html {
     @apply font-sans;
   }
+}
+
+@keyframes sello-in {
+  from {
+    transform: scale(1.15) rotate(-6deg);
+    opacity: 0.5;
+  }
+  to {
+    transform: scale(1) rotate(-6deg);
+    opacity: 1;
+  }
+}
+
+.sello-badge {
+  animation: sello-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.recibo-perforado {
+  position: relative;
+}
+
+.recibo-perforado::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background-image: radial-gradient(circle at 6px 6px, transparent 5px, var(--canvas) 5px);
+  background-size: 12px 12px;
+  background-repeat: repeat-x;
 }
