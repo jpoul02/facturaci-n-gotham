@@ -42,7 +42,7 @@ export function ClienteCombobox({ value, onChange, onRegistrarNuevo }: ClienteCo
         </span>
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </PopoverTrigger>
-      <PopoverContent align="start" className="w-(--radix-popper-anchor-width) p-0">
+      <PopoverContent align="start" className="w-(--anchor-width) p-0">
         <Command>
           <CommandInput placeholder="Buscar por nombre o NIT..." className="h-9" />
           <CommandList>
