@@ -22,9 +22,11 @@ interface ClienteComboboxProps {
 }
 
 export function ClienteCombobox({ value, onChange, onRegistrarNuevo }: ClienteComboboxProps) {
-  const { clientes } = useVentas();
+  const { clientes, buscarClientes } = useVentas();
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const seleccionado = clientes.find((c) => c.id === value);
+  const clientesFiltrados = buscarClientes(query);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -43,8 +45,13 @@ export function ClienteCombobox({ value, onChange, onRegistrarNuevo }: ClienteCo
         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
       </PopoverTrigger>
       <PopoverContent align="start" className="w-(--anchor-width) p-0">
-        <Command>
-          <CommandInput placeholder="Buscar por nombre o NIT..." className="h-9" />
+        <Command shouldFilter={false}>
+          <CommandInput
+            placeholder="Buscar por nombre o NIT..."
+            className="h-9"
+            value={query}
+            onValueChange={setQuery}
+          />
           <CommandList>
             <CommandEmpty>
               <button
@@ -59,7 +66,7 @@ export function ClienteCombobox({ value, onChange, onRegistrarNuevo }: ClienteCo
               </button>
             </CommandEmpty>
             <CommandGroup>
-              {clientes.map((cliente) => (
+              {clientesFiltrados.map((cliente) => (
                 <CommandItem
                   key={cliente.id}
                   value={cliente.nombre}
