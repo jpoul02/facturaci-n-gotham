@@ -30,7 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard, enabled: true, roles: TODOS_LOS_ROLES },
   { href: "/ventas", label: "Ventas", icon: Receipt, enabled: true, roles: TODOS_LOS_ROLES },
   { href: "/aprobaciones", label: "Aprobaciones", icon: ClipboardCheck, enabled: true, roles: ["supervisor", "administrador"] },
-  { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: false, roles: ["supervisor", "administrador"] },
+  { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: true, roles: ["supervisor", "administrador"] },
   { href: "/catalogos", label: "Catálogos", icon: Settings, enabled: true, roles: ["administrador"] },
   { href: "/seguridad", label: "Seguridad", icon: ShieldCheck, enabled: false, roles: ["administrador"] },
 ];
