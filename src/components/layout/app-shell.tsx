@@ -3,7 +3,7 @@ import { AppSidebar } from "./app-sidebar";
 
 export function AppShell({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen bg-canvas">
+    <div className="flex h-screen overflow-hidden bg-canvas">
       <AppSidebar />
       <main className="flex-1 overflow-y-auto p-8">{children}</main>
     </div>
