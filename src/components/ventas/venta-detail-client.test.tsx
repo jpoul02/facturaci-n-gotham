@@ -81,6 +81,7 @@ describe("VentaDetailClient", () => {
     await user.type(screen.getByLabelText(/motivo/i), "Cliente se arrepintió");
     await user.click(screen.getByRole("button", { name: /confirmar anulación/i }));
 
-    expect(screen.getByTestId("status-sello")).toHaveTextContent("Anulada");
+    expect(screen.getByTestId("status-pill")).toHaveTextContent("Anulación solicitada");
+    expect(screen.getByText(/esperando aprobación del supervisor/i)).toBeInTheDocument();
   });
 });

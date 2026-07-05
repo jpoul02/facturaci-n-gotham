@@ -50,6 +50,17 @@ export function VentaDetailClient({ ventaId }: { ventaId: string }) {
         </div>
       )}
 
+      {venta.estado === "anulacion_solicitada" && (
+        <div className="rounded-md border border-pending-700/30 bg-pending-700/5 px-4 py-3">
+          <p className="text-sm text-pending-700">
+            Anulación solicitada, esperando aprobación del supervisor.
+          </p>
+          {venta.motivoAnulacion && (
+            <p className="mt-1 text-sm text-slate-500">Motivo: {venta.motivoAnulacion}</p>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.8fr]">
         <div className="flex flex-col gap-4">
           {factura && (
