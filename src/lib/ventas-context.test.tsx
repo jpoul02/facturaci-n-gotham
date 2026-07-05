@@ -86,7 +86,7 @@ describe("VentasProvider", () => {
     expect(result.current.getVenta(ventaId)?.estado).toBe("autorizada");
   });
 
-  it("solicitarAnulacion marca la venta como anulada con motivo", () => {
+  it("solicitarAnulacion marca la venta como anulacion_solicitada con motivo", () => {
     __setRandomForTesting(() => 0.9);
     const { result } = renderHook(() => useVentas(), { wrapper });
     let ventaId = "";
@@ -96,8 +96,37 @@ describe("VentasProvider", () => {
     act(() => {
       result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
     });
-    expect(result.current.getVenta(ventaId)?.estado).toBe("anulada");
+    expect(result.current.getVenta(ventaId)?.estado).toBe("anulacion_solicitada");
     expect(result.current.getVenta(ventaId)?.motivoAnulacion).toBe("Cliente se arrepintió");
+  });
+
+  it("aprobarAnulacion marca la venta como anulada", () => {
+    __setRandomForTesting(() => 0.9);
+    const { result } = renderHook(() => useVentas(), { wrapper });
+    let ventaId = "";
+    act(() => {
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+    });
+    act(() => {
+      result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
+      result.current.aprobarAnulacion(ventaId);
+    });
+    expect(result.current.getVenta(ventaId)?.estado).toBe("anulada");
+  });
+
+  it("rechazarAnulacion devuelve la venta a autorizada y limpia el motivo", () => {
+    __setRandomForTesting(() => 0.9);
+    const { result } = renderHook(() => useVentas(), { wrapper });
+    let ventaId = "";
+    act(() => {
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+    });
+    act(() => {
+      result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
+      result.current.rechazarAnulacion(ventaId);
+    });
+    expect(result.current.getVenta(ventaId)?.estado).toBe("autorizada");
+    expect(result.current.getVenta(ventaId)?.motivoAnulacion).toBeUndefined();
   });
 
   it("registrarCliente agrega un cliente nuevo y buscarClientePorNit lo encuentra", () => {

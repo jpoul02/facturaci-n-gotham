@@ -29,6 +29,8 @@ interface VentasContextValue {
   buscarProductos: (query: string) => Producto[];
   crearVenta: (clienteId: string, lineas: LineaVenta[]) => string;
   solicitarAnulacion: (ventaId: string, motivo: string) => void;
+  aprobarAnulacion: (ventaId: string) => void;
+  rechazarAnulacion: (ventaId: string) => void;
   reintentarEmision: (ventaId: string) => void;
   getVenta: (ventaId: string) => Venta | undefined;
   getClientePorId: (clienteId: string) => Cliente | undefined;
@@ -122,7 +124,21 @@ export function VentasProvider({ children }: { children: ReactNode }) {
   const solicitarAnulacion = useCallback((ventaId: string, motivo: string) => {
     setVentas((prev) =>
       prev.map((v) =>
-        v.id === ventaId ? { ...v, estado: "anulada", motivoAnulacion: motivo } : v
+        v.id === ventaId ? { ...v, estado: "anulacion_solicitada", motivoAnulacion: motivo } : v
+      )
+    );
+  }, []);
+
+  const aprobarAnulacion = useCallback((ventaId: string) => {
+    setVentas((prev) =>
+      prev.map((v) => (v.id === ventaId ? { ...v, estado: "anulada" } : v))
+    );
+  }, []);
+
+  const rechazarAnulacion = useCallback((ventaId: string) => {
+    setVentas((prev) =>
+      prev.map((v) =>
+        v.id === ventaId ? { ...v, estado: "autorizada", motivoAnulacion: undefined } : v
       )
     );
   }, []);
@@ -158,6 +174,8 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         buscarProductos,
         crearVenta,
         solicitarAnulacion,
+        aprobarAnulacion,
+        rechazarAnulacion,
         reintentarEmision,
         getVenta,
         getClientePorId,
