@@ -1,20 +1,51 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { BarChart3, LayoutDashboard, Receipt, Settings, ShieldCheck } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  BarChart3,
+  LayoutDashboard,
+  LogOut,
+  Receipt,
+  Settings,
+  ShieldCheck,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth-context";
+import type { Rol } from "@/lib/mock-data/usuarios";
 
-const NAV_ITEMS = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, enabled: true },
-  { href: "/ventas", label: "Ventas", icon: Receipt, enabled: true },
-  { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: false },
-  { href: "/catalogos", label: "Catálogos", icon: Settings, enabled: false },
-  { href: "/seguridad", label: "Seguridad", icon: ShieldCheck, enabled: false },
-] as const;
+interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+  enabled: boolean;
+  roles: Rol[];
+}
+
+const TODOS_LOS_ROLES: Rol[] = ["vendedor", "supervisor", "administrador"];
+
+const NAV_ITEMS: NavItem[] = [
+  { href: "/", label: "Dashboard", icon: LayoutDashboard, enabled: true, roles: TODOS_LOS_ROLES },
+  { href: "/ventas", label: "Ventas", icon: Receipt, enabled: true, roles: TODOS_LOS_ROLES },
+  { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: false, roles: ["supervisor", "administrador"] },
+  { href: "/catalogos", label: "Catálogos", icon: Settings, enabled: false, roles: ["administrador"] },
+  { href: "/seguridad", label: "Seguridad", icon: ShieldCheck, enabled: false, roles: ["administrador"] },
+];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { usuarioActual, logout } = useAuth();
+
+  const itemsVisibles = usuarioActual
+    ? NAV_ITEMS.filter((item) => item.roles.includes(usuarioActual.rol))
+    : [];
+
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
 
   return (
     <aside className="flex h-full w-60 shrink-0 flex-col bg-ink-900 px-3 py-6 text-slate-200">
@@ -22,7 +53,7 @@ export function AppSidebar() {
         GOTHAM<span className="text-brand-600">·</span>Facturación
       </div>
       <nav className="flex flex-1 flex-col gap-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon, enabled }) => {
+        {itemsVisibles.map(({ href, label, icon: Icon, enabled }) => {
           const active = enabled && (pathname === href || (href !== "/" && pathname.startsWith(href)));
           return (
             <Link
@@ -45,6 +76,23 @@ export function AppSidebar() {
           );
         })}
       </nav>
+
+      {usuarioActual && (
+        <div className="mt-4 border-t border-white/10 pt-4">
+          <div className="px-3">
+            <p className="truncate text-sm font-medium text-white">{usuarioActual.nombre}</p>
+            <p className="text-xs capitalize text-slate-400">{usuarioActual.rol}</p>
+          </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-3 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/5"
+          >
+            <LogOut className="h-4 w-4" />
+            Cerrar sesión
+          </button>
+        </div>
+      )}
     </aside>
   );
 }
