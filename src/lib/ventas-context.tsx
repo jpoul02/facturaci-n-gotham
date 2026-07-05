@@ -27,6 +27,9 @@ interface VentasContextValue {
   buscarClientePorNit: (nit: string) => Cliente | undefined;
   registrarCliente: (data: Omit<Cliente, "id">) => Cliente;
   buscarProductos: (query: string) => Producto[];
+  crearProducto: (data: Omit<Producto, "id">) => Producto;
+  actualizarProducto: (id: string, data: Partial<Omit<Producto, "id">>) => void;
+  toggleActivoProducto: (id: string) => void;
   crearVenta: (clienteId: string, lineas: LineaVenta[]) => string;
   solicitarAnulacion: (ventaId: string, motivo: string) => void;
   aprobarAnulacion: (ventaId: string) => void;
@@ -41,6 +44,7 @@ const VentasContext = createContext<VentasContextValue | null>(null);
 
 export function VentasProvider({ children }: { children: ReactNode }) {
   const [clientes, setClientes] = useState<Cliente[]>(clientesSeed);
+  const [productos, setProductos] = useState<Producto[]>(productosSeed);
   const [ventas, setVentas] = useState<Venta[]>(ventasSeed);
   const [facturas, setFacturas] = useState<Factura[]>(facturasSeed);
   const secuenciaRef = useRef(facturasSeed.length + 1);
@@ -67,12 +71,32 @@ export function VentasProvider({ children }: { children: ReactNode }) {
     return nuevo;
   }, []);
 
-  const buscarProductos = useCallback((query: string) => {
-    const q = query.trim().toLowerCase();
-    if (!q) return [];
-    return productosSeed.filter(
-      (p) => p.nombre.toLowerCase().includes(q) || p.codigo.toLowerCase().includes(q)
-    );
+  const buscarProductos = useCallback(
+    (query: string) => {
+      const q = query.trim().toLowerCase();
+      if (!q) return [];
+      return productos.filter(
+        (p) => p.nombre.toLowerCase().includes(q) || p.codigo.toLowerCase().includes(q)
+      );
+    },
+    [productos]
+  );
+
+  const crearProducto = useCallback((data: Omit<Producto, "id">) => {
+    const nuevo: Producto = { ...data, id: crypto.randomUUID() };
+    setProductos((prev) => [...prev, nuevo]);
+    return nuevo;
+  }, []);
+
+  const actualizarProducto = useCallback(
+    (id: string, data: Partial<Omit<Producto, "id">>) => {
+      setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
+    },
+    []
+  );
+
+  const toggleActivoProducto = useCallback((id: string) => {
+    setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, activo: !p.activo } : p)));
   }, []);
 
   const resolverEmision = useCallback((ventaId: string) => {
@@ -165,13 +189,16 @@ export function VentasProvider({ children }: { children: ReactNode }) {
     <VentasContext.Provider
       value={{
         clientes,
-        productos: productosSeed,
+        productos,
         ventas,
         facturas,
         buscarClientes,
         buscarClientePorNit,
         registrarCliente,
         buscarProductos,
+        crearProducto,
+        actualizarProducto,
+        toggleActivoProducto,
         crearVenta,
         solicitarAnulacion,
         aprobarAnulacion,
