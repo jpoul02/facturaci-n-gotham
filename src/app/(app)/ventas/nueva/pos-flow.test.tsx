@@ -44,7 +44,7 @@ describe("Flujo POS - nueva venta", () => {
     expect(screen.getByRole("button", { name: /confirmar venta/i })).toBeDisabled();
   });
 
-  it("permite buscar cliente, agregar producto y confirmar la venta", async () => {
+  it("permite buscar cliente, agregar producto, elegir método de pago y confirmar la venta", async () => {
     const user = userEvent.setup();
     renderPage();
 
@@ -53,6 +53,8 @@ describe("Flujo POS - nueva venta", () => {
 
     await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cemento");
     await user.click(await screen.findByText(/Cemento Fortaleza/));
+
+    await user.click(screen.getByRole("button", { name: /efectivo/i }));
 
     const botonConfirmar = screen.getByRole("button", { name: /confirmar venta/i });
     expect(botonConfirmar).toBeEnabled();

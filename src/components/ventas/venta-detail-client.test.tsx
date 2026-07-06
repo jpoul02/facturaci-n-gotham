@@ -21,7 +21,7 @@ function Harness({ onReady }: { onReady: (ventaId: string) => void }) {
   const [ventaId, setVentaId] = useState<string | null>(null);
 
   useEffect(() => {
-    const id = crearVenta("cli-1", [lineaEjemplo]);
+    const id = crearVenta("cli-1", [lineaEjemplo], "efectivo");
     setVentaId(id);
     onReady(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps

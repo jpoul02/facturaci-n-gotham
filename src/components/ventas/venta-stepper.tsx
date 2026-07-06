@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-const PASOS = ["Cliente", "Carrito", "Confirmar"] as const;
+const PASOS = ["Cliente", "Carrito", "Pago", "Confirmar"] as const;
 
 export function VentaStepper({ pasoActual }: { pasoActual: number }) {
   return (

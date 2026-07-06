@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Cliente, Factura, LineaVenta, Producto, Venta } from "@/lib/types";
+import type { Cliente, Factura, LineaVenta, MetodoPago, Producto, Venta } from "@/lib/types";
 import { clientesSeed, facturasSeed, productosSeed, ventasSeed } from "@/lib/mock-data/seed";
 import { generarFactura } from "@/lib/mock-data/factura-generator";
 import { calcularTotalesVenta } from "@/lib/calculos";
@@ -30,7 +30,7 @@ interface VentasContextValue {
   crearProducto: (data: Omit<Producto, "id">) => Producto;
   actualizarProducto: (id: string, data: Partial<Omit<Producto, "id">>) => void;
   toggleActivoProducto: (id: string) => void;
-  crearVenta: (clienteId: string, lineas: LineaVenta[]) => string;
+  crearVenta: (clienteId: string, lineas: LineaVenta[], metodoPago: MetodoPago) => string;
   solicitarAnulacion: (ventaId: string, motivo: string) => void;
   aprobarAnulacion: (ventaId: string) => void;
   rechazarAnulacion: (ventaId: string) => void;
@@ -121,7 +121,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const crearVenta = useCallback(
-    (clienteId: string, lineas: LineaVenta[]) => {
+    (clienteId: string, lineas: LineaVenta[], metodoPago: MetodoPago) => {
       const totales = calcularTotalesVenta(
         lineas.map((l) => ({
           cantidad: l.cantidad,
@@ -136,6 +136,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         lineas,
         ...totales,
         estado: "confirmada",
+        metodoPago,
         fecha: new Date().toISOString(),
       };
       setVentas((prev) => [nuevaVenta, ...prev]);

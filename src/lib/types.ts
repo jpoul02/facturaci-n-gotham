@@ -7,6 +7,8 @@ export type EstadoVenta =
   | "anulacion_solicitada"
   | "anulada";
 
+export type MetodoPago = "efectivo" | "tarjeta" | "transferencia";
+
 export interface Cliente {
   id: string;
   nombre: string;
@@ -44,6 +46,7 @@ export interface Venta {
   impuesto: number;
   total: number;
   estado: EstadoVenta;
+  metodoPago: MetodoPago;
   fecha: string;
   motivoAnulacion?: string;
 }

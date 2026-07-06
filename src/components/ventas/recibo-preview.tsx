@@ -1,12 +1,14 @@
 import { calcularTotalesVenta } from "@/lib/calculos";
-import type { Cliente, LineaVenta } from "@/lib/types";
+import type { Cliente, LineaVenta, MetodoPago } from "@/lib/types";
+import { METODO_PAGO_LABELS } from "@/components/ventas/metodo-pago-selector";
 
 interface ReciboPreviewProps {
   cliente?: Cliente;
   lineas: LineaVenta[];
+  metodoPago?: MetodoPago;
 }
 
-export function ReciboPreview({ cliente, lineas }: ReciboPreviewProps) {
+export function ReciboPreview({ cliente, lineas, metodoPago }: ReciboPreviewProps) {
   const totales = calcularTotalesVenta(
     lineas.map((l) => ({ cantidad: l.cantidad, precioUnitario: l.precioUnitario, descuentoPct: l.descuentoPct }))
   );
@@ -17,6 +19,13 @@ export function ReciboPreview({ cliente, lineas }: ReciboPreviewProps) {
         <p className="text-xs uppercase tracking-widest text-slate-400">Comprobante</p>
         <p className="font-mono text-sm text-slate-500">Pendiente de emisión</p>
       </div>
+
+      {metodoPago && (
+        <p className="mb-4 text-sm text-slate-500">
+          Método de pago:{" "}
+          <span className="font-medium text-ink-900">{METODO_PAGO_LABELS[metodoPago]}</span>
+        </p>
+      )}
 
       <div className="mb-4 text-sm">
         <p className="text-slate-500">Cliente</p>

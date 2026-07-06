@@ -33,7 +33,7 @@ describe("VentasProvider", () => {
 
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     expect(result.current.getVenta(ventaId)?.estado).toBe("confirmada");
 
@@ -55,7 +55,7 @@ describe("VentasProvider", () => {
 
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     act(() => {
       vi.advanceTimersByTime(1600);
@@ -69,7 +69,7 @@ describe("VentasProvider", () => {
     const { result } = renderHook(() => useVentas(), { wrapper });
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     act(() => {
       vi.advanceTimersByTime(1600);
@@ -91,7 +91,7 @@ describe("VentasProvider", () => {
     const { result } = renderHook(() => useVentas(), { wrapper });
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     act(() => {
       result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
@@ -105,7 +105,7 @@ describe("VentasProvider", () => {
     const { result } = renderHook(() => useVentas(), { wrapper });
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     act(() => {
       result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
@@ -119,7 +119,7 @@ describe("VentasProvider", () => {
     const { result } = renderHook(() => useVentas(), { wrapper });
     let ventaId = "";
     act(() => {
-      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo]);
+      ventaId = result.current.crearVenta("cli-1", [lineaEjemplo], "efectivo");
     });
     act(() => {
       result.current.solicitarAnulacion(ventaId, "Cliente se arrepintió");
