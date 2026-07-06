@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
+import { AuditoriaProvider } from "@/lib/auditoria-context";
 import { VentasProvider } from "@/lib/ventas-context";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -37,9 +38,11 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
     >
       <body className="min-h-full">
-        <AuthProvider>
-          <VentasProvider>{children}</VentasProvider>
-        </AuthProvider>
+        <AuditoriaProvider>
+          <AuthProvider>
+            <VentasProvider>{children}</VentasProvider>
+          </AuthProvider>
+        </AuditoriaProvider>
         <Toaster />
       </body>
     </html>
