@@ -2,7 +2,6 @@
 
 import { Banknote, CreditCard, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import type { MetodoPago } from "@/lib/types";
 
 export const METODO_PAGO_LABELS: Record<MetodoPago, string> = {
