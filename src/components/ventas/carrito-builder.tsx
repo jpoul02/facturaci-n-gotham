@@ -57,6 +57,7 @@ export function CarritoBuilder({ lineas, onChange }: CarritoBuilderProps) {
       cantidad: 1,
       precioUnitario: producto.precio,
       descuentoPct: 0,
+      impuestoPct: 0,
       subtotal: calcularSubtotalLinea({ cantidad: 1, precioUnitario: producto.precio, descuentoPct: 0 }),
     };
     onChange([...lineas, nueva]);

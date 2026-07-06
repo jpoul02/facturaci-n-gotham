@@ -15,6 +15,7 @@ const lineaEjemplo: LineaVenta = {
   cantidad: 2,
   precioUnitario: 8.5,
   descuentoPct: 0,
+  impuestoPct: 13,
   subtotal: 17,
 };
 

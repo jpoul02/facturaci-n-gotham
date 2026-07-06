@@ -18,12 +18,20 @@ export interface Cliente {
   telefono?: string;
 }
 
+export interface TipoImpuesto {
+  id: string;
+  nombre: string;
+  porcentaje: number;
+  activo: boolean;
+}
+
 export interface Producto {
   id: string;
   codigo: string;
   nombre: string;
   precio: number;
   tipo: string;
+  tipoImpuestoId: string;
   activo: boolean;
 }
 
@@ -34,6 +42,7 @@ export interface LineaVenta {
   cantidad: number;
   precioUnitario: number;
   descuentoPct: number;
+  impuestoPct: number;
   subtotal: number;
 }
 

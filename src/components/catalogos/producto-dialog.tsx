@@ -58,6 +58,7 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
         codigo: codigo.trim(),
         precio: precioNumero,
         tipo: tipo.trim(),
+        tipoImpuestoId: "ti-1",
         activo: true,
       });
       toast.success("Producto creado");

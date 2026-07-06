@@ -1,9 +1,13 @@
 export const IVA_PCT = 13;
 
-export interface LineaCalculada {
+export interface LineaSubtotal {
   cantidad: number;
   precioUnitario: number;
   descuentoPct: number;
+}
+
+export interface LineaCalculada extends LineaSubtotal {
+  impuestoPct: number;
 }
 
 export interface TotalesVenta {
@@ -17,7 +21,7 @@ function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }
 
-export function calcularSubtotalLinea(linea: LineaCalculada): number {
+export function calcularSubtotalLinea(linea: LineaSubtotal): number {
   const bruto = linea.cantidad * linea.precioUnitario;
   const descuento = bruto * (linea.descuentoPct / 100);
   return round2(bruto - descuento);
@@ -30,7 +34,9 @@ export function calcularTotalesVenta(lineas: LineaCalculada[]): TotalesVenta {
     0
   );
   const subtotal = round2(bruto - descuento);
-  const impuesto = round2(subtotal * (IVA_PCT / 100));
+  const impuesto = round2(
+    lineas.reduce((acc, l) => acc + calcularSubtotalLinea(l) * (l.impuestoPct / 100), 0)
+  );
   const total = round2(subtotal + impuesto);
   return { subtotal, descuento: round2(descuento), impuesto, total };
 }

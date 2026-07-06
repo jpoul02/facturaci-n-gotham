@@ -173,6 +173,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
           cantidad: l.cantidad,
           precioUnitario: l.precioUnitario,
           descuentoPct: l.descuentoPct,
+          impuestoPct: l.impuestoPct,
         }))
       );
       const id = crypto.randomUUID();

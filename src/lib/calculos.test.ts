@@ -16,8 +16,8 @@ describe("calcularSubtotalLinea", () => {
 describe("calcularTotalesVenta", () => {
   it("calcula subtotal, descuento, impuesto (13%) y total sobre varias líneas", () => {
     const totales = calcularTotalesVenta([
-      { cantidad: 2, precioUnitario: 10, descuentoPct: 10 }, // subtotal 18
-      { cantidad: 1, precioUnitario: 20, descuentoPct: 0 }, // subtotal 20
+      { cantidad: 2, precioUnitario: 10, descuentoPct: 10, impuestoPct: 13 }, // subtotal 18
+      { cantidad: 1, precioUnitario: 20, descuentoPct: 0, impuestoPct: 13 }, // subtotal 20
     ]);
     expect(totales.subtotal).toBe(38);
     expect(totales.descuento).toBe(2);

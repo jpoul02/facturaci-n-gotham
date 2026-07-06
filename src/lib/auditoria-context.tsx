@@ -18,7 +18,11 @@ export type AccionAuditoria =
   | "usuario_creado"
   | "usuario_actualizado"
   | "usuario_activado"
-  | "usuario_desactivado";
+  | "usuario_desactivado"
+  | "tipo_impuesto_creado"
+  | "tipo_impuesto_actualizado"
+  | "tipo_impuesto_activado"
+  | "tipo_impuesto_desactivado";
 
 export const ACCION_LABELS: Record<AccionAuditoria, string> = {
   login: "Inicio de sesión",
@@ -37,6 +41,10 @@ export const ACCION_LABELS: Record<AccionAuditoria, string> = {
   usuario_actualizado: "Usuario actualizado",
   usuario_activado: "Usuario activado",
   usuario_desactivado: "Usuario desactivado",
+  tipo_impuesto_creado: "Tipo de impuesto creado",
+  tipo_impuesto_actualizado: "Tipo de impuesto actualizado",
+  tipo_impuesto_activado: "Tipo de impuesto activado",
+  tipo_impuesto_desactivado: "Tipo de impuesto desactivado",
 };
 
 export interface EventoAuditoria {

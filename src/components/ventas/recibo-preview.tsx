@@ -10,7 +10,7 @@ interface ReciboPreviewProps {
 
 export function ReciboPreview({ cliente, lineas, metodoPago }: ReciboPreviewProps) {
   const totales = calcularTotalesVenta(
-    lineas.map((l) => ({ cantidad: l.cantidad, precioUnitario: l.precioUnitario, descuentoPct: l.descuentoPct }))
+    lineas.map((l) => ({ cantidad: l.cantidad, precioUnitario: l.precioUnitario, descuentoPct: l.descuentoPct, impuestoPct: l.impuestoPct }))
   );
 
   return (
