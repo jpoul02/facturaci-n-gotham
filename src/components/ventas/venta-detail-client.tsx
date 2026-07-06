@@ -7,6 +7,7 @@ import { StatusBadge } from "@/components/ventas/status-badge";
 import { ReciboPreview } from "@/components/ventas/recibo-preview";
 import { AnulacionDialog } from "@/components/ventas/anulacion-dialog";
 import { Button } from "@/components/ui/button";
+import { METODO_PAGO_LABELS } from "@/components/ventas/metodo-pago-selector";
 
 export function VentaDetailClient({ ventaId }: { ventaId: string }) {
   const { getVenta, getClientePorId, getFacturaByVentaId, reintentarEmision } = useVentas();
@@ -63,6 +64,13 @@ export function VentaDetailClient({ ventaId }: { ventaId: string }) {
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_0.8fr]">
         <div className="flex flex-col gap-4">
+          <dl className="grid grid-cols-2 gap-3 rounded-lg border p-4 text-sm">
+            <div>
+              <dt className="text-slate-500">Método de pago</dt>
+              <dd className="font-medium text-ink-900">{METODO_PAGO_LABELS[venta.metodoPago]}</dd>
+            </div>
+          </dl>
+
           {factura && (
             <dl className="grid grid-cols-2 gap-3 rounded-lg border p-4 text-sm">
               <div>
