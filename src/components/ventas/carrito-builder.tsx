@@ -15,7 +15,7 @@ interface CarritoBuilderProps {
 }
 
 export function CarritoBuilder({ lineas, onChange }: CarritoBuilderProps) {
-  const { buscarProductos } = useVentas();
+  const { buscarProductos, getTipoImpuestoPorId } = useVentas();
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -57,7 +57,7 @@ export function CarritoBuilder({ lineas, onChange }: CarritoBuilderProps) {
       cantidad: 1,
       precioUnitario: producto.precio,
       descuentoPct: 0,
-      impuestoPct: 0,
+      impuestoPct: getTipoImpuestoPorId(producto.tipoImpuestoId)?.porcentaje ?? 0,
       subtotal: calcularSubtotalLinea({ cantidad: 1, precioUnitario: producto.precio, descuentoPct: 0 }),
     };
     onChange([...lineas, nueva]);

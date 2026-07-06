@@ -51,7 +51,7 @@ export function ReciboPreview({ cliente, lineas, metodoPago }: ReciboPreviewProp
           <span className="font-mono">${totales.subtotal.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-slate-500">
-          <span>IVA (13%)</span>
+          <span>Impuesto</span>
           <span className="font-mono">${totales.impuesto.toFixed(2)}</span>
         </div>
         <div className="flex justify-between text-lg font-[family-name:var(--font-fraunces)]">

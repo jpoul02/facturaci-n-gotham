@@ -12,6 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { TipoImpuestoCombobox } from "@/components/catalogos/tipo-impuesto-combobox";
 import { useVentas } from "@/lib/ventas-context";
 import type { Producto } from "@/lib/types";
 
@@ -27,6 +28,7 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
   const [codigo, setCodigo] = useState("");
   const [precio, setPrecio] = useState("");
   const [tipo, setTipo] = useState("");
+  const [tipoImpuestoId, setTipoImpuestoId] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -34,13 +36,18 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
       setCodigo(producto?.codigo ?? "");
       setPrecio(producto ? String(producto.precio) : "");
       setTipo(producto?.tipo ?? "");
+      setTipoImpuestoId(producto?.tipoImpuestoId ?? "");
     }
   }, [open, producto]);
 
   const precioNumero = Number(precio);
   const precioValido = precio.trim() !== "" && !Number.isNaN(precioNumero) && precioNumero > 0;
   const puedeGuardar =
-    nombre.trim() !== "" && codigo.trim() !== "" && tipo.trim() !== "" && precioValido;
+    nombre.trim() !== "" &&
+    codigo.trim() !== "" &&
+    tipo.trim() !== "" &&
+    tipoImpuestoId !== "" &&
+    precioValido;
 
   const handleSubmit = () => {
     if (!puedeGuardar) return;
@@ -50,6 +57,7 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
         codigo: codigo.trim(),
         precio: precioNumero,
         tipo: tipo.trim(),
+        tipoImpuestoId,
       });
       toast.success("Producto actualizado");
     } else {
@@ -58,7 +66,7 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
         codigo: codigo.trim(),
         precio: precioNumero,
         tipo: tipo.trim(),
-        tipoImpuestoId: "ti-1",
+        tipoImpuestoId,
         activo: true,
       });
       toast.success("Producto creado");
@@ -98,6 +106,10 @@ export function ProductoDialog({ open, onOpenChange, producto }: ProductoDialogP
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="tipo">Tipo</Label>
             <Input id="tipo" className="h-10" value={tipo} onChange={(e) => setTipo(e.target.value)} />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label>Tipo de impuesto</Label>
+            <TipoImpuestoCombobox value={tipoImpuestoId} onChange={setTipoImpuestoId} />
           </div>
         </div>
         <DialogFooter>
