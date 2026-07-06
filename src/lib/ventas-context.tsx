@@ -8,8 +8,22 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { Cliente, Factura, LineaVenta, MetodoPago, Producto, Venta } from "@/lib/types";
-import { clientesSeed, facturasSeed, productosSeed, ventasSeed } from "@/lib/mock-data/seed";
+import type {
+  Cliente,
+  Factura,
+  LineaVenta,
+  MetodoPago,
+  Producto,
+  TipoImpuesto,
+  Venta,
+} from "@/lib/types";
+import {
+  clientesSeed,
+  facturasSeed,
+  productosSeed,
+  tiposImpuestoSeed,
+  ventasSeed,
+} from "@/lib/mock-data/seed";
 import { generarFactura } from "@/lib/mock-data/factura-generator";
 import { calcularTotalesVenta } from "@/lib/calculos";
 import { useAuthOpcional } from "@/lib/auth-context";
@@ -23,6 +37,7 @@ export function __setRandomForTesting(fn: () => number) {
 interface VentasContextValue {
   clientes: Cliente[];
   productos: Producto[];
+  tiposImpuesto: TipoImpuesto[];
   ventas: Venta[];
   facturas: Factura[];
   buscarClientes: (query: string) => Cliente[];
@@ -32,6 +47,10 @@ interface VentasContextValue {
   crearProducto: (data: Omit<Producto, "id">) => Producto;
   actualizarProducto: (id: string, data: Partial<Omit<Producto, "id">>) => void;
   toggleActivoProducto: (id: string) => void;
+  crearTipoImpuesto: (data: Omit<TipoImpuesto, "id" | "activo">) => TipoImpuesto;
+  actualizarTipoImpuesto: (id: string, data: Partial<Omit<TipoImpuesto, "id">>) => void;
+  toggleActivoTipoImpuesto: (id: string) => void;
+  getTipoImpuestoPorId: (id: string) => TipoImpuesto | undefined;
   crearVenta: (clienteId: string, lineas: LineaVenta[], metodoPago: MetodoPago) => string;
   solicitarAnulacion: (ventaId: string, motivo: string) => void;
   aprobarAnulacion: (ventaId: string) => void;
@@ -52,6 +71,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
 
   const [clientes, setClientes] = useState<Cliente[]>(clientesSeed);
   const [productos, setProductos] = useState<Producto[]>(productosSeed);
+  const [tiposImpuesto, setTiposImpuesto] = useState<TipoImpuesto[]>(tiposImpuestoSeed);
   const [ventas, setVentas] = useState<Venta[]>(ventasSeed);
   const [facturas, setFacturas] = useState<Factura[]>(facturasSeed);
   const secuenciaRef = useRef(facturasSeed.length + 1);
@@ -143,6 +163,58 @@ export function VentasProvider({ children }: { children: ReactNode }) {
       });
     },
     [productos, usuarioActual, registrarEvento]
+  );
+
+  const crearTipoImpuesto = useCallback(
+    (data: Omit<TipoImpuesto, "id" | "activo">) => {
+      const nuevo: TipoImpuesto = { ...data, id: crypto.randomUUID(), activo: true };
+      setTiposImpuesto((prev) => [...prev, nuevo]);
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "tipo_impuesto_creado",
+        detalle: `Tipo de impuesto "${nuevo.nombre}" (${nuevo.porcentaje}%) creado`,
+      });
+      return nuevo;
+    },
+    [usuarioActual, registrarEvento]
+  );
+
+  const actualizarTipoImpuesto = useCallback(
+    (id: string, data: Partial<Omit<TipoImpuesto, "id">>) => {
+      const tipo = tiposImpuesto.find((t) => t.id === id);
+      setTiposImpuesto((prev) => prev.map((t) => (t.id === id ? { ...t, ...data } : t)));
+      if (tipo) {
+        registrarEvento?.({
+          usuarioId: usuarioActual?.id ?? null,
+          usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+          accion: "tipo_impuesto_actualizado",
+          detalle: `Tipo de impuesto "${tipo.nombre}" actualizado`,
+        });
+      }
+    },
+    [tiposImpuesto, usuarioActual, registrarEvento]
+  );
+
+  const toggleActivoTipoImpuesto = useCallback(
+    (id: string) => {
+      const tipo = tiposImpuesto.find((t) => t.id === id);
+      if (!tipo) return;
+      const nuevoActivo = !tipo.activo;
+      setTiposImpuesto((prev) => prev.map((t) => (t.id === id ? { ...t, activo: nuevoActivo } : t)));
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: nuevoActivo ? "tipo_impuesto_activado" : "tipo_impuesto_desactivado",
+        detalle: `Tipo de impuesto "${tipo.nombre}" ${nuevoActivo ? "activado" : "desactivado"}`,
+      });
+    },
+    [tiposImpuesto, usuarioActual, registrarEvento]
+  );
+
+  const getTipoImpuestoPorId = useCallback(
+    (id: string) => tiposImpuesto.find((t) => t.id === id),
+    [tiposImpuesto]
   );
 
   const resolverEmision = useCallback((ventaId: string) => {
@@ -279,6 +351,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
       value={{
         clientes,
         productos,
+        tiposImpuesto,
         ventas,
         facturas,
         buscarClientes,
@@ -288,6 +361,10 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         crearProducto,
         actualizarProducto,
         toggleActivoProducto,
+        crearTipoImpuesto,
+        actualizarTipoImpuesto,
+        toggleActivoTipoImpuesto,
+        getTipoImpuestoPorId,
         crearVenta,
         solicitarAnulacion,
         aprobarAnulacion,
