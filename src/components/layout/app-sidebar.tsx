@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   BarChart3,
   ClipboardCheck,
+  History,
   LayoutDashboard,
   LogOut,
   Receipt,
@@ -33,6 +34,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: true, roles: ["supervisor", "administrador"] },
   { href: "/catalogos", label: "Catálogos", icon: Settings, enabled: true, roles: ["administrador"] },
   { href: "/seguridad", label: "Seguridad", icon: ShieldCheck, enabled: true, roles: ["administrador"] },
+  { href: "/auditoria", label: "Auditoría", icon: History, enabled: true, roles: ["administrador"] },
 ];
 
 export function AppSidebar() {

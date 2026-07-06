@@ -12,6 +12,8 @@ import type { Cliente, Factura, LineaVenta, MetodoPago, Producto, Venta } from "
 import { clientesSeed, facturasSeed, productosSeed, ventasSeed } from "@/lib/mock-data/seed";
 import { generarFactura } from "@/lib/mock-data/factura-generator";
 import { calcularTotalesVenta } from "@/lib/calculos";
+import { useAuthOpcional } from "@/lib/auth-context";
+import { useAuditoriaOpcional } from "@/lib/auditoria-context";
 
 export let randomFn: () => number = Math.random;
 export function __setRandomForTesting(fn: () => number) {
@@ -43,6 +45,11 @@ interface VentasContextValue {
 const VentasContext = createContext<VentasContextValue | null>(null);
 
 export function VentasProvider({ children }: { children: ReactNode }) {
+  const authCtx = useAuthOpcional();
+  const auditoriaCtx = useAuditoriaOpcional();
+  const usuarioActual = authCtx?.usuarioActual ?? null;
+  const registrarEvento = auditoriaCtx?.registrarEvento;
+
   const [clientes, setClientes] = useState<Cliente[]>(clientesSeed);
   const [productos, setProductos] = useState<Producto[]>(productosSeed);
   const [ventas, setVentas] = useState<Venta[]>(ventasSeed);
@@ -65,11 +72,20 @@ export function VentasProvider({ children }: { children: ReactNode }) {
     [clientes]
   );
 
-  const registrarCliente = useCallback((data: Omit<Cliente, "id">) => {
-    const nuevo: Cliente = { ...data, id: crypto.randomUUID() };
-    setClientes((prev) => [...prev, nuevo]);
-    return nuevo;
-  }, []);
+  const registrarCliente = useCallback(
+    (data: Omit<Cliente, "id">) => {
+      const nuevo: Cliente = { ...data, id: crypto.randomUUID() };
+      setClientes((prev) => [...prev, nuevo]);
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "cliente_registrado",
+        detalle: `Cliente "${nuevo.nombre}" registrado`,
+      });
+      return nuevo;
+    },
+    [usuarioActual, registrarEvento]
+  );
 
   const buscarProductos = useCallback(
     (query: string) => {
@@ -82,22 +98,52 @@ export function VentasProvider({ children }: { children: ReactNode }) {
     [productos]
   );
 
-  const crearProducto = useCallback((data: Omit<Producto, "id">) => {
-    const nuevo: Producto = { ...data, id: crypto.randomUUID() };
-    setProductos((prev) => [...prev, nuevo]);
-    return nuevo;
-  }, []);
+  const crearProducto = useCallback(
+    (data: Omit<Producto, "id">) => {
+      const nuevo: Producto = { ...data, id: crypto.randomUUID() };
+      setProductos((prev) => [...prev, nuevo]);
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "producto_creado",
+        detalle: `Producto "${nuevo.nombre}" creado`,
+      });
+      return nuevo;
+    },
+    [usuarioActual, registrarEvento]
+  );
 
   const actualizarProducto = useCallback(
     (id: string, data: Partial<Omit<Producto, "id">>) => {
+      const producto = productos.find((p) => p.id === id);
       setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, ...data } : p)));
+      if (producto) {
+        registrarEvento?.({
+          usuarioId: usuarioActual?.id ?? null,
+          usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+          accion: "producto_actualizado",
+          detalle: `Producto "${producto.nombre}" actualizado`,
+        });
+      }
     },
-    []
+    [productos, usuarioActual, registrarEvento]
   );
 
-  const toggleActivoProducto = useCallback((id: string) => {
-    setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, activo: !p.activo } : p)));
-  }, []);
+  const toggleActivoProducto = useCallback(
+    (id: string) => {
+      const producto = productos.find((p) => p.id === id);
+      if (!producto) return;
+      const nuevoActivo = !producto.activo;
+      setProductos((prev) => prev.map((p) => (p.id === id ? { ...p, activo: nuevoActivo } : p)));
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: nuevoActivo ? "producto_activado" : "producto_desactivado",
+        detalle: `Producto "${producto.nombre}" ${nuevoActivo ? "activado" : "desactivado"}`,
+      });
+    },
+    [productos, usuarioActual, registrarEvento]
+  );
 
   const resolverEmision = useCallback((ventaId: string) => {
     setVentas((prev) =>
@@ -140,37 +186,78 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         fecha: new Date().toISOString(),
       };
       setVentas((prev) => [nuevaVenta, ...prev]);
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "venta_creada",
+        detalle: `Venta ${id.slice(0, 8)} creada`,
+      });
       setTimeout(() => resolverEmision(id), 400);
       return id;
     },
-    [resolverEmision]
+    [resolverEmision, usuarioActual, registrarEvento]
   );
 
-  const solicitarAnulacion = useCallback((ventaId: string, motivo: string) => {
-    setVentas((prev) =>
-      prev.map((v) =>
-        v.id === ventaId ? { ...v, estado: "anulacion_solicitada", motivoAnulacion: motivo } : v
-      )
-    );
-  }, []);
+  const solicitarAnulacion = useCallback(
+    (ventaId: string, motivo: string) => {
+      setVentas((prev) =>
+        prev.map((v) =>
+          v.id === ventaId ? { ...v, estado: "anulacion_solicitada", motivoAnulacion: motivo } : v
+        )
+      );
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "anulacion_solicitada",
+        detalle: `Anulación solicitada para venta ${ventaId.slice(0, 8)}: ${motivo}`,
+      });
+    },
+    [usuarioActual, registrarEvento]
+  );
 
-  const aprobarAnulacion = useCallback((ventaId: string) => {
-    setVentas((prev) =>
-      prev.map((v) => (v.id === ventaId ? { ...v, estado: "anulada" } : v))
-    );
-  }, []);
+  const aprobarAnulacion = useCallback(
+    (ventaId: string) => {
+      setVentas((prev) =>
+        prev.map((v) => (v.id === ventaId ? { ...v, estado: "anulada" } : v))
+      );
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "anulacion_aprobada",
+        detalle: `Anulación aprobada para venta ${ventaId.slice(0, 8)}`,
+      });
+    },
+    [usuarioActual, registrarEvento]
+  );
 
-  const rechazarAnulacion = useCallback((ventaId: string) => {
-    setVentas((prev) =>
-      prev.map((v) =>
-        v.id === ventaId ? { ...v, estado: "autorizada", motivoAnulacion: undefined } : v
-      )
-    );
-  }, []);
+  const rechazarAnulacion = useCallback(
+    (ventaId: string) => {
+      setVentas((prev) =>
+        prev.map((v) =>
+          v.id === ventaId ? { ...v, estado: "autorizada", motivoAnulacion: undefined } : v
+        )
+      );
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "anulacion_rechazada",
+        detalle: `Anulación rechazada para venta ${ventaId.slice(0, 8)}`,
+      });
+    },
+    [usuarioActual, registrarEvento]
+  );
 
   const reintentarEmision = useCallback(
-    (ventaId: string) => resolverEmision(ventaId),
-    [resolverEmision]
+    (ventaId: string) => {
+      registrarEvento?.({
+        usuarioId: usuarioActual?.id ?? null,
+        usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+        accion: "emision_reintentada",
+        detalle: `Reintento de emisión para venta ${ventaId.slice(0, 8)}`,
+      });
+      resolverEmision(ventaId);
+    },
+    [resolverEmision, usuarioActual, registrarEvento]
   );
 
   const getVenta = useCallback(
