@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Pencil, Power, PowerOff } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import {
@@ -73,17 +74,34 @@ export default function SeguridadPage() {
                   <TableCell>{usuario.activo ? "Sí" : "No"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button className="h-10" variant="outline" onClick={() => abrirEditar(usuario)}>
-                        Editar
+                      <Button
+                        className="h-10 w-10"
+                        variant="outline"
+                        aria-label="Editar"
+                        title="Editar"
+                        onClick={() => abrirEditar(usuario)}
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
-                        className="h-10"
+                        className="h-10 w-10"
                         variant="outline"
                         disabled={esUsuarioActual}
-                        title={esUsuarioActual ? "No podés desactivar tu propia cuenta" : undefined}
+                        aria-label={usuario.activo ? "Desactivar" : "Activar"}
+                        title={
+                          esUsuarioActual
+                            ? "No podés desactivar tu propia cuenta"
+                            : usuario.activo
+                              ? "Desactivar"
+                              : "Activar"
+                        }
                         onClick={() => toggleActivoUsuario(usuario.id)}
                       >
-                        {usuario.activo ? "Desactivar" : "Activar"}
+                        {usuario.activo ? (
+                          <PowerOff className="h-4 w-4" />
+                        ) : (
+                          <Power className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </TableCell>

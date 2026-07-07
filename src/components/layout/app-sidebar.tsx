@@ -52,9 +52,9 @@ export function AppSidebar() {
   };
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col bg-ink-900 px-3 py-6 text-slate-200">
-      <div className="mb-8 px-3 text-lg font-semibold tracking-tight text-white">
-        GOTHAM<span className="text-brand-600">·</span>Facturación
+    <aside className="flex h-full w-60 shrink-0 flex-col border-r bg-white px-3 py-6 text-ink-900">
+      <div className="mb-8 px-3 text-lg font-semibold tracking-tight text-ink-900">
+        Adventure Works<span className="text-brand-600">·</span>Facturación
       </div>
       <nav className="flex flex-1 flex-col gap-1">
         {itemsVisibles.map(({ href, label, icon: Icon, enabled }) => {
@@ -64,13 +64,14 @@ export function AppSidebar() {
               key={href}
               href={enabled ? href : "#"}
               aria-disabled={!enabled}
+              data-active={active}
               onClick={(e) => {
                 if (!enabled) e.preventDefault();
               }}
               className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
-                enabled ? "hover:bg-white/5" : "cursor-not-allowed text-slate-500",
-                active && "bg-brand-600/15 text-white"
+                "nav-glass-hover flex items-center gap-3 rounded-md border border-transparent px-3 py-2 text-sm text-ink-900/75",
+                !enabled && "cursor-not-allowed text-slate-400",
+                active && "font-medium text-ink-900"
               )}
             >
               <Icon className="h-4 w-4" />
@@ -82,15 +83,15 @@ export function AppSidebar() {
       </nav>
 
       {usuarioActual && (
-        <div className="mt-4 border-t border-white/10 pt-4">
+        <div className="mt-4 border-t pt-4">
           <div className="px-3">
-            <p className="truncate text-sm font-medium text-white">{usuarioActual.nombre}</p>
-            <p className="text-xs capitalize text-slate-400">{usuarioActual.rol}</p>
+            <p className="truncate text-sm font-medium text-ink-900">{usuarioActual.nombre}</p>
+            <p className="text-xs capitalize text-slate-500">{usuarioActual.rol}</p>
           </div>
           <button
             type="button"
             onClick={handleLogout}
-            className="mt-3 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-slate-300 transition-colors hover:bg-white/5"
+            className="mt-3 flex w-full items-center gap-3 rounded-md border border-transparent px-3 py-2 text-sm text-error-700 transition-colors hover:border-error-700/20 hover:bg-error-700/10"
           >
             <LogOut className="h-4 w-4" />
             Cerrar sesión

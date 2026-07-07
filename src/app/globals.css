@@ -60,7 +60,7 @@
   --canvas: #F5F6F8;
   --ink-900: #10172A;
   --ink-700: #1B2333;
-  --brand-600: #3454D1;
+  --brand-600: #145C3F;
   --success-700: #147A52;
   --pending-700: #B9770E;
   --error-700: #B23A3A;
@@ -70,7 +70,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: var(--brand-600);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -173,4 +173,32 @@
   background-image: radial-gradient(circle at 6px 6px, transparent 5px, var(--canvas) 5px);
   background-size: 12px 12px;
   background-repeat: repeat-x;
+}
+
+.nav-glass-hover {
+  position: relative;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.nav-glass-hover:hover,
+.nav-glass-hover[data-active="true"] {
+  background: rgba(20, 92, 63, 0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-color: rgba(20, 92, 63, 0.25);
+  box-shadow:
+    0 4px 16px rgba(20, 92, 63, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6),
+    inset 0 -1px 0 rgba(20, 92, 63, 0.08);
+}
+
+.nav-glass-hover:hover::before,
+.nav-glass-hover[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
 }

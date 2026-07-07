@@ -23,7 +23,7 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Facturación Electrónica — GOTHAM",
+  title: "Facturación Electrónica — Adventure Works",
   description: "Prototipo de sistema de ventas y facturación electrónica (DTE)",
 };
 

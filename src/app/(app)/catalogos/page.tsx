@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Pencil, Power, PowerOff } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { useVentas } from "@/lib/ventas-context";
 import { Button } from "@/components/ui/button";
@@ -114,15 +115,27 @@ export default function CatalogosPage() {
                   <TableCell>{producto.activo ? "Sí" : "No"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button className="h-10" variant="outline" onClick={() => abrirEditarProducto(producto)}>
-                        Editar
+                      <Button
+                        className="h-10 w-10"
+                        variant="outline"
+                        aria-label="Editar"
+                        title="Editar"
+                        onClick={() => abrirEditarProducto(producto)}
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
-                        className="h-10"
+                        className="h-10 w-10"
                         variant="outline"
+                        aria-label={producto.activo ? "Desactivar" : "Activar"}
+                        title={producto.activo ? "Desactivar" : "Activar"}
                         onClick={() => toggleActivoProducto(producto.id)}
                       >
-                        {producto.activo ? "Desactivar" : "Activar"}
+                        {producto.activo ? (
+                          <PowerOff className="h-4 w-4" />
+                        ) : (
+                          <Power className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </TableCell>
@@ -150,15 +163,27 @@ export default function CatalogosPage() {
                   <TableCell>{tipo.activo ? "Sí" : "No"}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button className="h-10" variant="outline" onClick={() => abrirEditarTipo(tipo)}>
-                        Editar
+                      <Button
+                        className="h-10 w-10"
+                        variant="outline"
+                        aria-label="Editar"
+                        title="Editar"
+                        onClick={() => abrirEditarTipo(tipo)}
+                      >
+                        <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
-                        className="h-10"
+                        className="h-10 w-10"
                         variant="outline"
+                        aria-label={tipo.activo ? "Desactivar" : "Activar"}
+                        title={tipo.activo ? "Desactivar" : "Activar"}
                         onClick={() => toggleActivoTipoImpuesto(tipo.id)}
                       >
-                        {tipo.activo ? "Desactivar" : "Activar"}
+                        {tipo.activo ? (
+                          <PowerOff className="h-4 w-4" />
+                        ) : (
+                          <Power className="h-4 w-4" />
+                        )}
                       </Button>
                     </div>
                   </TableCell>

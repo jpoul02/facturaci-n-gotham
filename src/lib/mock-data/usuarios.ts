@@ -10,7 +10,7 @@ export interface Usuario {
 }
 
 export const usuariosSeed: Usuario[] = [
-  { id: "usr-1", nombre: "Ana Beltrán", email: "vendedor@gotham.sv", password: "vendedor123", rol: "vendedor", activo: true },
-  { id: "usr-2", nombre: "Carlos Reyes", email: "supervisor@gotham.sv", password: "supervisor123", rol: "supervisor", activo: true },
-  { id: "usr-3", nombre: "Lucía Hernández", email: "admin@gotham.sv", password: "admin123", rol: "administrador", activo: true },
+  { id: "usr-1", nombre: "Ana Beltrán", email: "vendedor@adventureworks.com", password: "vendedor123", rol: "vendedor", activo: true },
+  { id: "usr-2", nombre: "Carlos Reyes", email: "supervisor@adventureworks.com", password: "supervisor123", rol: "supervisor", activo: true },
+  { id: "usr-3", nombre: "Lucía Hernández", email: "admin@adventureworks.com", password: "admin123", rol: "administrador", activo: true },
 ];
