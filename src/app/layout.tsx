@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth-context";
@@ -23,8 +23,17 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Facturación Electrónica — Adventure Works",
-  description: "Prototipo de sistema de ventas y facturación electrónica (DTE)",
+  title: {
+    default: "Adventure Works · Facturación",
+    template: "%s — Adventure Works · Facturación",
+  },
+  description:
+    "Sistema interno de ventas y facturación electrónica (DTE) de Adventure Works.",
+  applicationName: "Adventure Works · Facturación",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#145C3F",
 };
 
 export default function RootLayout({

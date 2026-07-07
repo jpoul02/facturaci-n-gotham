@@ -118,55 +118,57 @@ export function CarritoBuilder({ lineas, onChange }: CarritoBuilderProps) {
           Agrega productos buscándolos arriba.
         </p>
       ) : (
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="text-left text-slate-500">
-              <th className="pb-2 font-normal">Producto</th>
-              <th className="pb-2 font-normal">Cant.</th>
-              <th className="pb-2 font-normal">Desc. %</th>
-              <th className="pb-2 text-right font-normal">Subtotal</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {lineas.map((linea) => (
-              <tr key={linea.id} className="border-t">
-                <td className="py-2">{linea.nombreProducto}</td>
-                <td className="py-2">
-                  <Input
-                    type="number"
-                    min={1}
-                    className="h-9 w-16"
-                    value={linea.cantidad}
-                    onChange={(e) =>
-                      actualizarLinea(linea.id, { cantidad: Math.max(1, Number(e.target.value)) })
-                    }
-                  />
-                </td>
-                <td className="py-2">
-                  <Input
-                    type="number"
-                    min={0}
-                    max={100}
-                    className="h-9 w-16"
-                    value={linea.descuentoPct}
-                    onChange={(e) =>
-                      actualizarLinea(linea.id, {
-                        descuentoPct: Math.min(100, Math.max(0, Number(e.target.value))),
-                      })
-                    }
-                  />
-                </td>
-                <td className="py-2 text-right font-mono">${linea.subtotal.toFixed(2)}</td>
-                <td className="py-2 text-right">
-                  <Button variant="ghost" size="icon" onClick={() => eliminarLinea(linea.id)}>
-                    <Trash2 className="h-4 w-4 text-error-700" />
-                  </Button>
-                </td>
+        <div className="overflow-x-auto rounded-md border">
+          <table className="w-full min-w-[420px] text-sm">
+            <thead>
+              <tr className="text-left text-slate-500">
+                <th className="p-2 font-normal">Producto</th>
+                <th className="p-2 font-normal">Cant.</th>
+                <th className="p-2 font-normal">Desc. %</th>
+                <th className="p-2 text-right font-normal">Subtotal</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {lineas.map((linea) => (
+                <tr key={linea.id} className="border-t">
+                  <td className="p-2">{linea.nombreProducto}</td>
+                  <td className="p-2">
+                    <Input
+                      type="number"
+                      min={1}
+                      className="h-9 w-16"
+                      value={linea.cantidad}
+                      onChange={(e) =>
+                        actualizarLinea(linea.id, { cantidad: Math.max(1, Number(e.target.value)) })
+                      }
+                    />
+                  </td>
+                  <td className="p-2">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={100}
+                      className="h-9 w-16"
+                      value={linea.descuentoPct}
+                      onChange={(e) =>
+                        actualizarLinea(linea.id, {
+                          descuentoPct: Math.min(100, Math.max(0, Number(e.target.value))),
+                        })
+                      }
+                    />
+                  </td>
+                  <td className="p-2 text-right font-mono">${linea.subtotal.toFixed(2)}</td>
+                  <td className="p-2 text-right">
+                    <Button variant="ghost" size="icon" onClick={() => eliminarLinea(linea.id)}>
+                      <Trash2 className="h-4 w-4 text-error-700" />
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

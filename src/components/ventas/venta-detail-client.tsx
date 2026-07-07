@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useVentas } from "@/lib/ventas-context";
 import { StatusBadge } from "@/components/ventas/status-badge";
@@ -8,6 +9,20 @@ import { ReciboPreview } from "@/components/ventas/recibo-preview";
 import { AnulacionDialog } from "@/components/ventas/anulacion-dialog";
 import { Button } from "@/components/ui/button";
 import { METODO_PAGO_LABELS } from "@/components/ventas/metodo-pago-selector";
+
+// @react-pdf/renderer touches browser-only globals at module load — keep it
+// out of the server render entirely, not just lazy on the client.
+const DescargarPdfButton = dynamic(
+  () => import("@/components/ventas/descargar-pdf-button").then((m) => m.DescargarPdfButton),
+  {
+    ssr: false,
+    loading: () => (
+      <Button className="h-10" disabled>
+        Cargando PDF...
+      </Button>
+    ),
+  }
+);
 
 export function VentaDetailClient({ ventaId }: { ventaId: string }) {
   const { getVenta, getClientePorId, getFacturaByVentaId, reintentarEmision } = useVentas();
@@ -94,9 +109,7 @@ export function VentaDetailClient({ ventaId }: { ventaId: string }) {
 
           {venta.estado === "autorizada" && (
             <div className="flex gap-3">
-              <Button className="h-10" onClick={() => window.print()}>
-                Descargar / Imprimir
-              </Button>
+              <DescargarPdfButton venta={venta} cliente={cliente} factura={factura} />
               <Button className="h-10" variant="outline" onClick={() => setDialogAnulacionAbierto(true)}>
                 Solicitar anulación
               </Button>

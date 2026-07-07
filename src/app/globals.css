@@ -144,21 +144,6 @@
   }
 }
 
-@keyframes sello-in {
-  from {
-    transform: scale(1.15) rotate(-6deg);
-    opacity: 0.5;
-  }
-  to {
-    transform: scale(1) rotate(-6deg);
-    opacity: 1;
-  }
-}
-
-.sello-badge {
-  animation: sello-in 200ms cubic-bezier(0.23, 1, 0.32, 1);
-}
-
 .recibo-perforado {
   position: relative;
 }
