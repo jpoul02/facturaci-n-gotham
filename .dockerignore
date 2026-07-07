@@ -1,0 +1,13 @@
+node_modules
+.next
+.next-*
+.git
+.gitignore
+*.log
+npm-debug.log*
+coverage
+docs
+.superpowers
+.claude
+.env*
+README.md

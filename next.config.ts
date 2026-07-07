@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   // hitting Next's "another dev server is already running" lock, by pointing
   // it at a separate dist dir. See docs/dev-multiple-instances.md.
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  output: "standalone",
 };
 
 export default nextConfig;
