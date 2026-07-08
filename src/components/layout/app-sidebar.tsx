@@ -29,8 +29,8 @@ interface NavItem {
 const TODOS_LOS_ROLES: Rol[] = ["vendedor", "supervisor", "administrador"];
 
 const NAV_ITEMS: NavItem[] = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, enabled: true, roles: TODOS_LOS_ROLES },
-  { href: "/ventas", label: "Ventas", icon: Receipt, enabled: true, roles: TODOS_LOS_ROLES },
+  { href: "/", label: "Ventas", icon: Receipt, enabled: true, roles: TODOS_LOS_ROLES },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard, enabled: true, roles: TODOS_LOS_ROLES },
   { href: "/aprobaciones", label: "Aprobaciones", icon: ClipboardCheck, enabled: true, roles: ["supervisor", "administrador"] },
   { href: "/reportes", label: "Reportes", icon: BarChart3, enabled: true, roles: ["supervisor", "administrador"] },
   { href: "/catalogos", label: "Catálogos", icon: Settings, enabled: true, roles: ["administrador"] },
