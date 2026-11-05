@@ -1,6 +1,8 @@
 # Adventure Works · Facturación
 
-Prototipo de sistema interno de ventas y facturación electrónica (DTE, El Salvador) para Adventure Works. Frontend-only — sin backend real, la emisión de comprobantes se simula.
+Prototipo de sistema interno de ventas y facturación electrónica (DTE, El Salvador) para Adventure Works, tienda de bicicletas, accesorios y repuestos.
+
+La emisión va contra el firmador y la API de Hacienda simulados ([facturacin-gotham-api](https://github.com/jpoul02/facturacin-gotham-api)): definí `NEXT_PUBLIC_HACIENDA_URL` en `.env.local` (ver `.env.example`). Sin esa variable la app simula la emisión localmente.
 
 ## Stack
 

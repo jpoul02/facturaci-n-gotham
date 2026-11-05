@@ -33,8 +33,9 @@ export default function AprobacionesPage() {
   const solicitudes = ventas.filter((v) => v.estado === "anulacion_solicitada");
 
   const handleAprobar = (ventaId: string) => {
-    aprobarAnulacion(ventaId);
-    toast.success("Anulación aprobada");
+    aprobarAnulacion(ventaId)
+      .then(() => toast.success("Anulación aprobada"))
+      .catch((e: Error) => toast.error(e.message));
   };
 
   const handleRechazar = (ventaId: string) => {

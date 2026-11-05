@@ -26,6 +26,7 @@ import {
 } from "@/lib/mock-data/seed";
 import { generarFactura } from "@/lib/mock-data/factura-generator";
 import { calcularTotalesVenta } from "@/lib/calculos";
+import { HACIENDA_URL, anularDte, emitirDte } from "@/lib/hacienda";
 import { useAuthOpcional } from "@/lib/auth-context";
 import { useAuditoriaOpcional } from "@/lib/auditoria-context";
 
@@ -53,7 +54,7 @@ interface VentasContextValue {
   getTipoImpuestoPorId: (id: string) => TipoImpuesto | undefined;
   crearVenta: (clienteId: string, lineas: LineaVenta[], metodoPago: MetodoPago) => string;
   solicitarAnulacion: (ventaId: string, motivo: string) => void;
-  aprobarAnulacion: (ventaId: string) => void;
+  aprobarAnulacion: (ventaId: string) => Promise<void>;
   rechazarAnulacion: (ventaId: string) => void;
   reintentarEmision: (ventaId: string) => void;
   getVenta: (ventaId: string) => Venta | undefined;
@@ -217,10 +218,29 @@ export function VentasProvider({ children }: { children: ReactNode }) {
     [tiposImpuesto]
   );
 
-  const resolverEmision = useCallback((ventaId: string) => {
+  const resolverEmision = useCallback((venta: Venta) => {
+    const ventaId = venta.id;
     setVentas((prev) =>
       prev.map((v) => (v.id === ventaId ? { ...v, estado: "procesando_dte" } : v))
     );
+    if (HACIENDA_URL) {
+      const factura = generarFactura(ventaId, secuenciaRef.current++);
+      emitirDte(venta, clientes.find((c) => c.id === venta.clienteId), factura.numeroControl, factura.codigoGeneracion)
+        .then((r) => {
+          setFacturas((prev) => [...prev, { ...factura, selloRecepcion: r.selloRecibido }]);
+          setVentas((prev) => prev.map((v) => (v.id === ventaId ? { ...v, estado: "autorizada" } : v)));
+        })
+        .catch((e: Error) => {
+          setVentas((prev) => prev.map((v) => (v.id === ventaId ? { ...v, estado: "error_dte" } : v)));
+          registrarEvento?.({
+            usuarioId: usuarioActual?.id ?? null,
+            usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+            accion: "emision_rechazada",
+            detalle: `Venta ${ventaId.slice(0, 8)}: ${e.message}`,
+          });
+        });
+      return;
+    }
     setTimeout(() => {
       const exito = randomFn() > 0.05;
       if (exito) {
@@ -236,7 +256,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         );
       }
     }, 1200);
-  }, []);
+  }, [clientes, usuarioActual, registrarEvento]);
 
   const crearVenta = useCallback(
     (clienteId: string, lineas: LineaVenta[], metodoPago: MetodoPago) => {
@@ -265,7 +285,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         accion: "venta_creada",
         detalle: `Venta ${id.slice(0, 8)} creada`,
       });
-      setTimeout(() => resolverEmision(id), 400);
+      setTimeout(() => resolverEmision(nuevaVenta), 400);
       return id;
     },
     [resolverEmision, usuarioActual, registrarEvento]
@@ -289,7 +309,22 @@ export function VentasProvider({ children }: { children: ReactNode }) {
   );
 
   const aprobarAnulacion = useCallback(
-    (ventaId: string) => {
+    async (ventaId: string) => {
+      const venta = ventas.find((v) => v.id === ventaId);
+      const factura = facturas.find((f) => f.ventaId === ventaId);
+      if (HACIENDA_URL && venta && factura) {
+        try {
+          await anularDte(factura, venta, clientes.find((c) => c.id === venta.clienteId), venta.motivoAnulacion ?? "");
+        } catch (e) {
+          registrarEvento?.({
+            usuarioId: usuarioActual?.id ?? null,
+            usuarioNombre: usuarioActual?.nombre ?? "Sistema",
+            accion: "anulacion_rechazada_mh",
+            detalle: `Venta ${ventaId.slice(0, 8)}: ${(e as Error).message}`,
+          });
+          throw e;
+        }
+      }
       setVentas((prev) =>
         prev.map((v) => (v.id === ventaId ? { ...v, estado: "anulada" } : v))
       );
@@ -300,7 +335,7 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         detalle: `Anulación aprobada para venta ${ventaId.slice(0, 8)}`,
       });
     },
-    [usuarioActual, registrarEvento]
+    [ventas, facturas, clientes, usuarioActual, registrarEvento]
   );
 
   const rechazarAnulacion = useCallback(
@@ -328,9 +363,10 @@ export function VentasProvider({ children }: { children: ReactNode }) {
         accion: "emision_reintentada",
         detalle: `Reintento de emisión para venta ${ventaId.slice(0, 8)}`,
       });
-      resolverEmision(ventaId);
+      const venta = ventas.find((v) => v.id === ventaId);
+      if (venta) resolverEmision(venta);
     },
-    [resolverEmision, usuarioActual, registrarEvento]
+    [ventas, resolverEmision, usuarioActual, registrarEvento]
   );
 
   const getVenta = useCallback(

@@ -8,6 +8,8 @@ FROM node:20-bullseye-slim AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+ARG NEXT_PUBLIC_HACIENDA_URL
+ENV NEXT_PUBLIC_HACIENDA_URL=$NEXT_PUBLIC_HACIENDA_URL
 RUN npm run build
 
 FROM node:20-bullseye-slim AS runner

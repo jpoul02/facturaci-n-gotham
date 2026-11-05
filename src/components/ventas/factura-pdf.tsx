@@ -1,21 +1,11 @@
 import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 import type { Cliente, Factura, Venta } from "@/lib/types";
 import { METODO_PAGO_LABELS } from "@/components/ventas/metodo-pago-selector";
+import { EMISOR } from "@/lib/emisor";
 
 // Los códigos DTE son cadenas largas sin espacios; el hyphenator por defecto
 // de react-pdf no las corta, y desbordan la columna. Forzamos corte por caracter.
 const breakAnywhere = (word: string) => word.split("");
-
-const EMISOR = {
-  nombre: "ADVENTURE WORKS S.A. DE C.V.",
-  nombreComercial: "ADVENTUREWORKS EL SALVADOR",
-  nit: "0614-010126-101-3",
-  nrc: "123456-7",
-  actividadEconomica: "Venta de bicicletas, accesorios y artículos deportivos",
-  direccion: "Parque Industrial, Distrito de San Salvador, San Salvador Centro, San Salvador",
-  telefono: "2298-3000",
-  correo: "facturacion@adventureworks.com",
-};
 
 const styles = StyleSheet.create({
   page: { padding: 36, fontSize: 9, fontFamily: "Helvetica", color: "#10172A" },

@@ -15,6 +15,8 @@ export type AccionAuditoria =
   | "anulacion_aprobada"
   | "anulacion_rechazada"
   | "emision_reintentada"
+  | "emision_rechazada"
+  | "anulacion_rechazada_mh"
   | "usuario_creado"
   | "usuario_actualizado"
   | "usuario_activado"
@@ -37,6 +39,8 @@ export const ACCION_LABELS: Record<AccionAuditoria, string> = {
   anulacion_aprobada: "Anulación aprobada",
   anulacion_rechazada: "Anulación rechazada",
   emision_reintentada: "Reintento de emisión",
+  emision_rechazada: "Emisión rechazada por Hacienda",
+  anulacion_rechazada_mh: "Anulación rechazada por Hacienda",
   usuario_creado: "Usuario creado",
   usuario_actualizado: "Usuario actualizado",
   usuario_activado: "Usuario activado",
