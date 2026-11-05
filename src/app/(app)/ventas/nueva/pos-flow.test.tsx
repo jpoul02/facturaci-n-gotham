@@ -51,8 +51,8 @@ describe("Flujo POS - nueva venta", () => {
     await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByText("Karla Beatriz Hernández"));
 
-    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cemento");
-    await user.click(await screen.findByText(/Cemento Fortaleza/));
+    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cámara");
+    await user.click(await screen.findByText(/Cámara de aire/));
 
     await user.click(screen.getByRole("button", { name: /efectivo/i }));
 

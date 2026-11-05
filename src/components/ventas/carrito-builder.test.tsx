@@ -24,10 +24,10 @@ describe("CarritoBuilder", () => {
     const user = userEvent.setup();
     renderHarness();
 
-    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cemento");
-    await user.click(await screen.findByText(/Cemento Fortaleza/));
+    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cámara");
+    await user.click(await screen.findByText(/Cámara de aire/));
 
-    expect(screen.getByText(/Cemento Fortaleza/)).toBeInTheDocument();
+    expect(screen.getByText(/Cámara de aire/)).toBeInTheDocument();
     expect(screen.getByText("$8.50")).toBeInTheDocument();
   });
 
@@ -35,8 +35,8 @@ describe("CarritoBuilder", () => {
     const user = userEvent.setup();
     renderHarness();
 
-    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Cinta métrica");
-    await user.click(await screen.findByText(/Cinta métrica/));
+    await user.type(screen.getByPlaceholderText(/buscar producto/i), "Parche");
+    await user.click(await screen.findByText(/Parche para cámara/));
 
     expect(await screen.findByText(/no está disponible actualmente/i)).toBeInTheDocument();
     expect(screen.queryByText("$3.25")).not.toBeInTheDocument();

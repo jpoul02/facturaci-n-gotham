@@ -11,7 +11,7 @@ function wrapper({ children }: { children: ReactNode }) {
 const lineaEjemplo: LineaVenta = {
   id: "linea-1",
   productoId: "prod-1",
-  nombreProducto: "Cemento Fortaleza 42.5kg",
+  nombreProducto: 'Cámara de aire 29"',
   cantidad: 2,
   precioUnitario: 8.5,
   descuentoPct: 0,
